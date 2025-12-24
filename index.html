@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Traffic System</title>
+    <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+
+<h2>Smart Traffic Monitoring</h2>
+
+<input type="file" id="videoInput" multiple accept="video/*">
+
+<div class="grid">
+    <div class="cell">
+        <span class="label">North</span>
+        <div class="novideo" id="north-text">NO VIDEO</div>
+        <video id="north" controls></video>
+    </div>
+
+    <div class="cell">
+        <span class="label">East</span>
+        <div class="novideo" id="east-text">NO VIDEO</div>
+        <video id="east" controls></video>
+    </div>
+
+    <div class="cell">
+        <span class="label">West</span>
+        <div class="novideo" id="west-text">NO VIDEO</div>
+        <video id="west" controls></video>
+    </div>
+
+    <div class="cell">
+        <span class="label">South</span>
+        <div class="novideo" id="south-text">NO VIDEO</div>
+        <video id="south" controls></video>
+    </div>
+</div>
+
+<!-- External JS -->
+<script src="src/app.js"></script>
+
+</body>
+</html>

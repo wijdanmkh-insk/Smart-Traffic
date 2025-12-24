@@ -1,0 +1,23 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Data & models
+python/dataset/
+datasets/
+*.pt
+*.onnx
+
+# Videos
+*.mp4
+*.avi
+*.mov
+
+# Output
+outputs/
+*.db
+
+# OS junk
+.DS_Store
+Thumbs.db
