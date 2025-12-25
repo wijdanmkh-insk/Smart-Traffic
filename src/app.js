@@ -45,6 +45,8 @@ function showVideo(direction, file) {
     video.play().catch(() => {
         console.log("Autoplay blocked:", direction);
     });
+
+    attachROIOnVideo(video, direction);
 }
 
 
@@ -142,22 +144,84 @@ function drawROI(canvas, points) {
     ctx.stroke();
 }
 
-async function loadROI(direction, canvas) {
-    try {
-        const res = await fetch(`http://localhost:5000/api/roi/${direction}`);
-        if (!res.ok) return;
+/****************************
+ * LOAD ROI
+ ****************************/
+function syncCanvasToVideo(video, canvas) {
+    const rect = video.getBoundingClientRect();
 
-        const data = await res.json();
-        if (!data.points || data.points.length === 0) return;
+    canvas.width  = rect.width;
+    canvas.height = rect.height;
 
-        drawROI(canvas, data.points);
-        showPopup(`📐 ROI loaded for ${direction.toUpperCase()}`);
-    } catch (err) {
-        console.error(err);
-        showPopup(`❌ Failed to load ROI for ${direction}`, true);
-    }
+    canvas.style.width  = rect.width + "px";
+    canvas.style.height = rect.height + "px";
 }
 
+
+function loadROI(direction, videoEl, canvas) {
+    fetch(`http://localhost:5000/api/roi/${direction}`)
+        .then(res => {
+            if (!res.ok) throw new Error("ROI not found");
+            return res.json();
+        })
+        .then(data => {
+            if (!data.points || data.points.length === 0) return;
+
+            drawROIonCanvas(videoEl, canvas, data.points);
+        })
+        .catch(() => {
+            console.log(`No ROI for ${direction}`);
+        });
+}
+
+function drawROIonCanvas(video, canvas, points) {
+    const ctx = canvas.getContext("2d");
+
+    // 🔥 CRITICAL
+    syncCanvasToVideo(video, canvas);
+
+    const scaleX = canvas.width  / video.videoWidth;
+    const scaleY = canvas.height / video.videoHeight;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    points.forEach((p, i) => {
+        const x = p[0] * scaleX;
+        const y = p[1] * scaleY;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+    ctx.stroke();
+
+    console.log({
+    videoWidth: video.videoWidth,
+    videoHeight: video.videoHeight,
+    canvasWidth: canvas.width,
+    canvasHeight: canvas.height
+});
+
+}
+
+
+function attachROIOnVideo(videoEl, direction) {
+    const canvas = videoEl.closest(".cell").querySelector(".roi-canvas");
+
+    videoEl.addEventListener("loadedmetadata", () => {
+        loadROI(direction, videoEl, canvas);
+    });
+}
+
+
+
+
+/****************************
+ * SAVE ROI
+ ****************************/
 document.querySelectorAll(".save-btn").forEach(btn => {
     btn.addEventListener("click", saveROI);
 });
@@ -170,18 +234,29 @@ function saveROI(event) {
     }
 
     const direction = cell.dataset.direction;
+    const video = cell.querySelector("video");
+    const canvas = cell.querySelector(".roi-canvas");
 
     if (!roiPoints[direction] || roiPoints[direction].length < 3) {
         alert("⚠️ ROI not defined yet");
         return;
     }
 
+    // 🔥 CRITICAL: Convert canvas coords to video coords
+    const scaleX = video.videoWidth / canvas.width;
+    const scaleY = video.videoHeight / canvas.height;
+    
+    const scaledPoints = roiPoints[direction].map(p => [
+        Math.round(p[0] * scaleX),
+        Math.round(p[1] * scaleY)
+    ]);
+
     fetch("http://localhost:5000/api/roi", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             direction,
-            points: roiPoints[direction]
+            points: scaledPoints  // 🔥 Save VIDEO coordinates, not canvas
         })
     })
     .then(res => {
@@ -196,7 +271,6 @@ function saveROI(event) {
         showPopup("❌ Failed to save ROI", true);
     });
 }
-
 
 function showPopup(message, isError = false) {
     const popup = document.getElementById("popup");

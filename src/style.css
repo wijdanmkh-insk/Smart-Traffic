@@ -7,9 +7,23 @@ body {
     margin: 30px;
 }
 
-h2 {
-    text-align: center;
+.header-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 👈 THIS */
+    width: 100%;
 }
+
+.header-group h2 {
+    margin: 0;
+    font-size: 40px;
+}
+
+.button-group {
+    display: flex;
+    align-items: center;
+}
+
 
 .grid {
     display: grid;
@@ -88,7 +102,7 @@ video, canvas {
     position: absolute;
     top: 0;
     left: 0;
-    pointer-events: none; /* disabled by default */
+    pointer-events: none;
 }
 
 /* Pop up */
