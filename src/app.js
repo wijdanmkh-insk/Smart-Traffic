@@ -80,7 +80,7 @@ function uploadVideos(files) {
 function handleVideoUpload(event) {
     const files = event.target.files;
 
-    resetAllCells();
+    // resetAllCells();
 
     for (let file of files) {
         const direction = detectDirection(file.name);
