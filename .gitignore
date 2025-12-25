@@ -6,6 +6,7 @@ __pycache__/
 # Data & models
 python/dataset/
 datasets/
+db/
 *.pt
 *.onnx
 

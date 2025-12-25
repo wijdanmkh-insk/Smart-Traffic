@@ -9,31 +9,78 @@
 
 <h2>Smart Traffic Monitoring</h2>
 
-<input type="file" id="videoInput" multiple accept="video/*">
+<div id="popup" class="popup hidden"></div>
 
 <div class="grid">
-    <div class="cell">
+    <div class="cell" data-direction="north">
         <span class="label">North</span>
         <div class="novideo" id="north-text">NO VIDEO</div>
         <video id="north" controls></video>
+        <canvas class="roi-canvas"></canvas>
+        <div class="frame-btn">
+            <button class="edit-btn">
+            Edit Area
+            </button>
+            <button class="save-btn">
+                Save Area
+            </button>
+        </div>
     </div>
 
-    <div class="cell">
+    <div class="cell" data-direction="east">
         <span class="label">East</span>
         <div class="novideo" id="east-text">NO VIDEO</div>
         <video id="east" controls></video>
+        <canvas class="roi-canvas"></canvas>
+        <div class="frame-btn">
+            <button class="edit-btn">
+            Edit Area
+            </button>
+            <button class="save-btn">
+                Save Area
+            </button>
+        </div>
     </div>
 
-    <div class="cell">
+    <div class="cell" data-direction="west">
         <span class="label">West</span>
         <div class="novideo" id="west-text">NO VIDEO</div>
         <video id="west" controls></video>
+        <canvas class="roi-canvas"></canvas>
+        <div class="frame-btn">
+            <button class="edit-btn">
+            Edit Area
+            </button>
+            <button class="save-btn">
+                Save Area
+            </button>
+        </div>
     </div>
 
-    <div class="cell">
+    <div class="cell" data-direction="south">
         <span class="label">South</span>
         <div class="novideo" id="south-text">NO VIDEO</div>
         <video id="south" controls></video>
+        <canvas class="roi-canvas"></canvas>
+        <div class="frame-btn">
+            <button class="edit-btn">
+            Edit Area
+            </button>
+            <button class="save-btn">
+                Save Area
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="button-group">
+    <div>
+        <label for="videoInput" class="config-btn">Select Videos</label>
+        <input type="file" id="videoInput" multiple accept="video/*" hidden>
+    </div>
+
+    <div>
+        
     </div>
 </div>
 
